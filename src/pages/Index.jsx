@@ -1,17 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Utensils } from "lucide-react";
+import { Link } from 'react-router-dom';
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [filteredOptions, setFilteredOptions] = useState([]);
 
   const cateringOptions = [
     { id: 1, name: 'Breakfast Buffet', description: 'A variety of breakfast items including pastries, fruits, and hot dishes.', price: '$15 per person' },
     { id: 2, name: 'Sandwich Platter', description: 'Assorted sandwiches with sides.', price: '$12 per person' },
     { id: 3, name: 'Mediterranean Feast', description: 'Hummus, falafel, pita bread, and more.', price: '$18 per person' },
   ];
+
+  useEffect(() => {
+    const filtered = cateringOptions.filter(option =>
+      option.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      option.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredOptions(filtered);
+  }, [searchTerm]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -21,9 +31,9 @@ const Index = () => {
             <Utensils className="mr-2" /> CaterEase
           </h1>
           <nav>
-            <Button variant="ghost">About</Button>
-            <Button variant="ghost">Contact</Button>
-            <Button>Login</Button>
+            <Link to="/about"><Button variant="ghost">About</Button></Link>
+            <Link to="/contact"><Button variant="ghost">Contact</Button></Link>
+            <Link to="/login"><Button>Login</Button></Link>
           </nav>
         </div>
       </header>
@@ -40,7 +50,7 @@ const Index = () => {
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {cateringOptions.map((option) => (
+          {filteredOptions.map((option) => (
             <Card key={option.id}>
               <CardHeader>
                 <CardTitle>{option.name}</CardTitle>
